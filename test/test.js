@@ -7,6 +7,7 @@ let lzEndpointMock;
 let minter;
 const chainIdSrc = 1;
 const chainIdDst = 2;
+const debug = false;
 
 describe('OmniNFT', async function () {
   before(async function () {
@@ -22,7 +23,7 @@ describe('OmniNFT', async function () {
     omniNFT = await OmniNFT.deploy();
     await omniNFT.deployed();
 
-    console.log('OmniNFT deployed to:', omniNFT.address);
+    debug && console.log('OmniNFT deployed to:', omniNFT.address);
   });
 
   it('Should safely mint', async function () {
@@ -30,18 +31,20 @@ describe('OmniNFT', async function () {
     const tx = await omniNFT.safeMint(minter.address);
     const receipt = await tx.wait();
 
-    console.log('OmniNFT minted to:', await omniNFT.ownerOf(0));
+    debug && console.log('OmniNFT minted to:', await omniNFT.ownerOf(0));
   });
 });
 
 describe('Marketplace', function () {
   it('Should deploy', async function () {
     const Marketplace = await ethers.getContractFactory('Marketplace');
-    const marketplace = await Marketplace.deploy(lzEndpointMockSrc.address);
+    marketplace = await Marketplace.deploy(lzEndpointMockSrc.address);
     await marketplace.deployed();
 
-    console.log('Marketplace deployed to:', marketplace.address);
+    debug && console.log('Marketplace deployed to:', marketplace.address);
+  });
 
+  it('Should transfer ownership of NFT via LayerZero', async function () {
     await lzEndpointMockSrc.setDestLzEndpoint(
       omniNFT.address,
       lzEndpointMockDst.address
@@ -49,9 +52,13 @@ describe('Marketplace', function () {
 
     const newOwner = await ethers.getSigner(1);
 
+    debug && console.log(await omniNFT.ownerOf(0));
+
     omniNFT.connect(minter).approve(lzEndpointMockDst.address, 0);
     await marketplace
       .connect(minter)
       .changeNFTOwner(chainIdDst, omniNFT.address, newOwner.address, 0);
+
+    debug && console.log(await omniNFT.ownerOf(0));
   });
 });
