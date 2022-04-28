@@ -24,9 +24,9 @@ contract OmniNFT is ERC721, Ownable, ILayerZeroReceiver {
     }
 
     function lzReceive(
-        uint16 _srcChainId,
-        bytes calldata _srcAddress,
-        uint64 _nonce,
+        uint16,
+        bytes calldata,
+        uint64,
         bytes calldata _payload
     ) external override {
         address _newOwner;
