@@ -19,3 +19,9 @@ https://testnet.snowtrace.io/tx/0xf7c52e75d131384e1528c649d9b17cd7a716a232ceb313
 
 NFT Receive LayerZero Message and Change NFT Owner\
 https://rinkeby.etherscan.io/tx/0x1e5eb5198ffa5efad8e5062c076061d7fdde33c6f45bf0e6577f0a956b054868
+
+### Security Considerations
+
+The approval to transfer the NFT must be given to the LayerZero endpoint. A major security flaw is that once the approval is in place, anybody can call changeNFTOwner() on the Marketplace contract, transferring the NFT to any address they please.
+
+Measures should be put in place to restrict access to changeNFTOwner().
