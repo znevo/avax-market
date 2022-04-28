@@ -15,6 +15,8 @@ contract OmniNFT is ERC721, Ownable, ILayerZeroReceiver {
 
     constructor() ERC721("OmniNFT", "OMNI") {}
 
+    receive() external payable {}
+
     function safeMint(address to) public onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
